@@ -40,6 +40,9 @@ function setup() {
   // handle broadcast calls
   socket.on ( 'mouse', newDrawing );
   socket.on ( 'emoji', newEmoji );
+  socket.on ( 'clear', function() {
+    background ( 200, 200, 200 );
+  } );
 
   colorMode ( HSB );
 
@@ -60,6 +63,15 @@ function flipDrawing() {
 
   drawing = !drawing;
   
+}
+
+function keyPressed () {
+  if ( keyCode == DELETE ) {
+
+    background ( 200, 200, 200 );
+
+    socket.emit ( 'clear' );
+  }
 }
 
 function newEmoji ( data ) {

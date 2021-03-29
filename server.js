@@ -26,13 +26,18 @@ function newConnection ( socket ) {
 
     socket.on ( 'mouse', mouseMsg );
     socket.on ( 'emoji', emojiMsg);
+    socket.on ( 'clear', clearMsg );
 
     function mouseMsg ( data ) {
         socket.broadcast.emit ( 'mouse', data );
     }
 
     function emojiMsg ( data ) {
-        socket.broadcast.emit ('emoji', data );
+        socket.broadcast.emit ( 'emoji', data );
+    }
+
+    function clearMsg () {
+        socket.broadcast.emit ( 'clear' );
     }
 
 }
