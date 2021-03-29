@@ -7,6 +7,8 @@ var slider;
 var drawBtn;
 var drawing = true;
 
+var deleteBtn;
+
 var circle;
 
 function preload() {
@@ -54,6 +56,17 @@ function setup() {
   drawBtn.position ( windowWidth - 170, 100 );
   drawBtn.mousePressed ( flipDrawing );
 
+  deleteBtn = createButton ( "clear" );
+  deleteBtn.position ( windowWidth - 170, 150 );
+  deleteBtn.mousePressed ( clearWindow );
+
+}
+
+function clearWindow() {
+
+  background ( 200, 200, 200 );
+
+  socket.emit ( 'clear' );
 }
 
 function flipDrawing() {
@@ -65,14 +78,17 @@ function flipDrawing() {
   
 }
 
-function keyPressed () {
+/*function keyPressed () {
+  console.log ( 'pressed' );
   if ( keyCode == DELETE ) {
+
+    console.log ('delete pressed');
 
     background ( 200, 200, 200 );
 
     socket.emit ( 'clear' );
   }
-}
+}*/
 
 function newEmoji ( data ) {
   image ( emoji, data.x, data.y, 50, 50 );
