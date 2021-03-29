@@ -8,7 +8,8 @@ var express = require ( 'express' );
 var app = express();
 
 // create our server
-var server = app.listen ( 3000 );
+var port = process.env.PORT || 3000;
+var server = app.listen ( port );
 
 // use files in public folder
 app.use ( express.static ( 'public' ) );
