@@ -18,5 +18,9 @@
   "bugs": {
     "url": "https://github.com/marija2/acc-hw7/issues"
   },
-  "homepage": "https://github.com/marija2/acc-hw7#readme"
+  "homepage": "https://github.com/marija2/acc-hw7#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.0.0"
+  }
 }
