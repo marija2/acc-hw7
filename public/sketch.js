@@ -46,7 +46,7 @@ function setup() {
     background ( 200, 200, 200 );
   } );
 
-  colorMode ( HSB );
+  //colorMode ( HSB );
 
   slider = createSlider ( 0, 200, 20 );
   slider.position ( windowWidth - 170, 50 );
