@@ -35,7 +35,7 @@ function setup() {
 
   background ( 200, 200, 200 );
 
-  socket = io.connect('http://localhost:3000');
+  socket = io.connect('https://acc-hw7.herokuapp.com/');
 
   // handle broadcast calls
   socket.on ( 'mouse', newDrawing );
