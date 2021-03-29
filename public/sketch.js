@@ -46,7 +46,7 @@ function setup() {
   slider = createSlider ( 0, 200, 20 );
   slider.position ( windowWidth - 170, 50 );
 
-  drawBtn = createButton ( 'Draw' );
+  drawBtn = createButton ( 'Stamp' );
   drawBtn.id('drawBtn');
   drawBtn.position ( windowWidth - 170, 100 );
   drawBtn.mousePressed ( flipDrawing );
@@ -55,8 +55,8 @@ function setup() {
 
 function flipDrawing() {
 
-  if ( drawing ) document.getElementById('drawBtn').innerHTML = "Stamp";
-  else document.getElementById('drawBtn').innerHTML = "Draw";
+  if ( drawing ) document.getElementById('drawBtn').innerHTML = "Draw";
+  else document.getElementById('drawBtn').innerHTML = "Stamp";
 
   drawing = !drawing;
   
