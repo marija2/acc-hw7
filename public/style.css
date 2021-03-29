@@ -6,3 +6,8 @@ html, body {
 canvas {
   display: block;
 }
+
+#someBtn {
+  margin-left: 1300;
+  background-color: red;
+}

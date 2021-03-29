@@ -1,7 +1,96 @@
-function setup() {
-  createCanvas(400, 400);
+
+var socket;
+
+var emoji;
+var slider;
+
+var drawBtn;
+var drawing = true;
+
+var circle;
+
+function preload() {
+  emoji = loadImage('images/emoji.png');
 }
 
-function draw() {
-  background(220);
+function mouseClicked() {
+
+  if ( drawing ) return;
+
+  image ( emoji, mouseX, mouseY, 50, 50 );
+
+  var data = {
+    x: mouseX,
+    y: mouseY
+  };
+
+  socket.emit ( 'emoji', data );
+}
+
+function setup() {
+
+  var canvas = createCanvas ( windowWidth - 200, windowHeight );
+
+  canvas.position (0,0);
+
+  background ( 200, 200, 200 );
+
+  socket = io.connect('http://localhost:3000');
+
+  // handle broadcast calls
+  socket.on ( 'mouse', newDrawing );
+  socket.on ( 'emoji', newEmoji );
+
+  colorMode ( HSB );
+
+  slider = createSlider ( 0, 200, 20 );
+  slider.position ( windowWidth - 170, 50 );
+
+  drawBtn = createButton ( 'Draw' );
+  drawBtn.id('drawBtn');
+  drawBtn.position ( windowWidth - 170, 100 );
+  drawBtn.mousePressed ( flipDrawing );
+
+}
+
+function flipDrawing() {
+
+  if ( drawing ) document.getElementById('drawBtn').innerHTML = "Stamp";
+  else document.getElementById('drawBtn').innerHTML = "Draw";
+
+  drawing = !drawing;
+  
+}
+
+function newEmoji ( data ) {
+  image ( emoji, data.x, data.y, 50, 50 );
+}
+
+function newDrawing ( data ) {
+    fill ( 50, 100, 100 );
+    ellipse ( data.x, data.y, data.size, data.size );
+}
+
+function draw() {}
+
+// will activate whenever you click and dragg
+function mouseDragged() {
+
+  if ( !drawing ) return;
+
+  fill ( 50, 100, 100 );
+  noStroke();
+  ellipse ( mouseX, mouseY, slider.value(), slider.value() );
+
+  // data is what socket will send to other clinets
+  // object literal notation
+  var data = {
+    x: mouseX,
+    y: mouseY,
+    size: slider.value()
+  };
+
+  // mouse is a channel name
+  socket.emit('mouse', data);
+
 }
