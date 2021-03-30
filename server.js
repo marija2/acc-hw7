@@ -1,52 +1,28 @@
-// backend code, server code
-console.log ( "in server.js" );
 
-// sockets
 var express = require ( 'express' );
 
-// using a constructor to create an express app
 var app = express();
 
-// create our server
 var port = process.env.PORT || 3000;
 var server = app.listen ( port );
 
-//var server = app.listen ( 3000 );
-
-// use files in public folder
-app.use ( express.static ( 'public' ) );
+app.use ( express.static ( 'public' ) );            // use files in public folder
 
 var socket = require ( 'socket.io' );
 
-// a variable that keeps track of inputs and outputs
-var io = socket ( server );
+var io = socket ( server );                         // a variable that keeps track of inputs and outputs
 
 io.sockets.on ( 'connection', newConnection );
 
 function newConnection ( socket ) {
-    console.log ( 'new conn ' + socket.id );
 
-    socket.on ( 'mouse', mouseMsg );
-    socket.on ( 'emoji', emojiMsg);
-    socket.on ( 'clear', clearMsg );
-    socket.on ( 'text', textMsg );
+    socket.on ( 'mouse', function ( data ) { socket.broadcast.emit ( 'mouse', data ); } );
 
-    function textMsg ( data ) {
-        socket.broadcast.emit ( 'text', data );
-    }
+    socket.on ( 'emoji', function ( data ) { socket.broadcast.emit ( 'emoji', data ); } );
 
-    function mouseMsg ( data ) {
-        socket.broadcast.emit ( 'mouse', data );
-    }
+    socket.on ( 'clear', function () { socket.broadcast.emit ( 'clear' ); } );
 
-    function emojiMsg ( data ) {
-        socket.broadcast.emit ( 'emoji', data );
-    }
-
-    function clearMsg () {
-        socket.broadcast.emit ( 'clear' );
-    }
-
+    socket.on ( 'text', function ( data ) { socket.broadcast.emit ( 'text', data ); } );
 }
 
 

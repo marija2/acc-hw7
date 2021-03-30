@@ -1,33 +1,14 @@
 
 var socket;
 
-var emoji;
-var slider;
-
+var sizeSlider;
 var drawBtn;
 var drawing = true;
-
-var deleteBtn;
-
-var circle;
-
 var colorPicker;
-
-var drawLabel;
-var sizeLabel;
-var clearLabel;
-var colorLabel;
-var textLabel;
-
-var line1;
-var line2;
-var line3;
-
 var textInput;
 var emojiSelect;
 
-var dictionary;
-
+// images
 var flower;
 var sun;
 var heart;
@@ -35,7 +16,9 @@ var butterfly;
 var unicord;
 var candy;
 
-function preload() {
+var dictionary;
+
+function preload() {                                // get images for stamps
   flower = loadImage('images/flower.png');
   sun = loadImage('images/sun.png');
   heart = loadImage('images/heart.png');
@@ -47,81 +30,104 @@ function preload() {
 function setup() {
 
   var canvas = createCanvas ( windowWidth - 200, windowHeight );
-
   canvas.position (0,0);
 
   background ( 254, 254, 254 );
 
   socket = io.connect('https://acc-hw7.herokuapp.com/');
-  
-  //socket = io.connect ( 'http://localhost:3000' );
 
   // handle broadcast calls
-  socket.on ( 'mouse', newDrawing );
+  socket.on ( 'mouse', function ( data ) {
 
-  socket.on ( 'emoji', newEmoji );
+    fill ( data.color );
+    noStroke();
+    ellipse ( data.x, data.y, data.size, data.size );
 
-  socket.on ( 'clear', function() {
-    background ( 254, 254, 254 );
   } );
 
-  socket.on ( 'text', newText );
+  socket.on ( 'emoji', function ( data ) {
 
-  drawLabel = createElement ( 'h5', 'Choose drawing or stamping:' );
+    imageMode ( CENTER );
+    image ( dictionary [ data.val ], data.x, data.y, data.size, data.size );
+
+  });
+
+  socket.on ( 'text', function ( data ) {
+
+    fill ( data.color );
+    textSize ( data.size );
+    text ( data.text, data.x, data.y );
+
+  } );
+
+  socket.on ( 'clear', function() { background ( 254, 254, 254 ); } );
+
+  var left = windowWidth - 180;
+
+  // create buttons, labels, lines, and other elements in the side bar
+  var drawLabel = createElement ( 'h5', 'Choose drawing or stamping:' );
   drawLabel.addClass ( 'labelClass' );
-  drawLabel.position ( windowWidth - 180, 10 );
+  drawLabel.position ( left, 10 );
 
   drawBtn = createButton ( 'Stamp' );
-  drawBtn.id('drawBtn');
+  drawBtn.id ( 'drawBtn' );
   drawBtn.addClass ( 'btnClass' );
-  drawBtn.position ( windowWidth - 180, 50 );
-  drawBtn.mousePressed ( flipDrawing );
+  drawBtn.position ( left, 50 );
 
-  sizeLabel = createElement ( 'h5', 'Choose a size:' );
+  drawBtn.mousePressed ( function () {
+
+    if ( drawing ) document.getElementById('drawBtn').innerHTML = "Draw";
+    else document.getElementById('drawBtn').innerHTML = "Stamp";
+  
+    drawing = !drawing;
+    
+  } );
+
+  var sizeLabel = createElement ( 'h5', 'Choose a size:' );
   sizeLabel.addClass ( 'labelClass' );
-  sizeLabel.position ( windowWidth - 180, 80 );
+  sizeLabel.position ( left, 80 );
 
-  slider = createSlider ( 0, 200, 20 );
-  slider.addClass ( 'sliderClass' );
-  slider.position ( windowWidth - 180, 120 );
+  sizeSlider = createSlider ( 0, 200, 20 );
+  sizeSlider.addClass ( 'sliderClass' );
+  sizeSlider.position ( left, 120 );
 
-  line1 = createElement('hr');
+  var line1 = createElement('hr');
   line1.addClass ( 'lineClass' );
-  line1.position ( windowWidth - 180, 140 );
+  line1.position ( left, 140 );
 
-  colorLabel = createElement ( 'h5', 'Choose a drawing color:' );
+  var colorLabel = createElement ( 'h5', 'Choose a drawing color:' );
   colorLabel.addClass ( 'labelClass' );
-  colorLabel.position ( windowWidth - 180, 150 );
+  colorLabel.position ( left, 150 );
 
   colorPicker = createColorPicker ( "blue" );
-  colorPicker.position ( windowWidth - 180, 190 );
+  colorPicker.position ( left, 190 );
 
-  line2 = createElement('hr');
+  var line2 = createElement('hr');
   line2.addClass ( 'lineClass' );
-  line2.position ( windowWidth - 180, 220 );
+  line2.position ( left, 220 );
 
-  textLabel = createElement ( 'h5', 'Add text to canvas:' );
+  var textLabel = createElement ( 'h5', 'Add text to canvas:' );
   textLabel.addClass ( 'labelClass' );
-  textLabel.position ( windowWidth - 180, 230 );
+  textLabel.position ( left, 230 );
 
   textInput = createInput();
-  textInput.position ( windowWidth - 180, 270 );
+  textInput.position ( left, 270 );
 
   textBtn = createButton ( 'Add text' );
   textBtn.addClass ( 'btnClass' );
-  textBtn.position ( windowWidth - 180, 300 );
+  textBtn.position ( left, 300 );
   textBtn.mousePressed ( addText );
 
-  line3 = createElement('hr');
+  var line3 = createElement('hr');
   line3.addClass ( 'lineClass' );
-  line3.position ( windowWidth - 180, 330 );
+  line3.position ( left, 330 );
 
-  emojiLabel = createElement ( 'h5', 'Choose stamp:' );
+  var emojiLabel = createElement ( 'h5', 'Choose stamp:' );
   emojiLabel.addClass ( 'labelClass' );
-  emojiLabel.position ( windowWidth - 180, 340 );
+  emojiLabel.position ( left, 340 );
 
   emojiSelect = createSelect();
-  emojiSelect.position ( windowWidth - 180, 380 );
+  emojiSelect.position ( left, 380 );
   emojiSelect.option ( 'flower', 0 );
   emojiSelect.option ( 'heart', 1 );
   emojiSelect.option ( 'butterfly', 2 );
@@ -129,18 +135,24 @@ function setup() {
   emojiSelect.option ( 'unicorn', 4 );
   emojiSelect.option ( 'candy', 5 );
 
-  line4 = createElement('hr');
+  var line4 = createElement('hr');
   line4.addClass ( 'lineClass' );
-  line4.position ( windowWidth - 180, 400 );
+  line4.position ( left, 400 );
 
-  clearLabel = createElement ( 'h5', 'Delete everything:' );
+  var clearLabel = createElement ( 'h5', 'Delete everything:' );
   clearLabel.addClass ( 'labelClass' );
-  clearLabel.position ( windowWidth - 180, 410 );
+  clearLabel.position ( left, 410 );
 
-  deleteBtn = createButton ( "Clear" );
+  var deleteBtn = createButton ( "Clear" );
   deleteBtn.addClass ( 'btnClass' );
-  deleteBtn.position ( windowWidth - 180, 450 );
-  deleteBtn.mousePressed ( clearWindow );
+  deleteBtn.position ( left, 450 );
+
+  deleteBtn.mousePressed ( function () {
+    
+      background ( 254, 254, 254 );
+      socket.emit ( 'clear' );
+
+    } );
 
   dictionary = {
     0: flower,
@@ -152,20 +164,11 @@ function setup() {
   };
 }
 
-function newText ( data ) {
-
-  fill ( data.color );
-
-  textSize ( data.size );
-
-  text ( data.text, data.x, data.y );
-}
-
 function addText () {
 
   fill ( colorPicker.color().levels );
 
-  textSize ( slider.value() );
+  textSize ( sizeSlider.value() );
 
   var xCoord = random ( windowWidth - 300 ) + 50;
   var yCoord = random ( windowHeight - 100 ) + 50;
@@ -176,90 +179,48 @@ function addText () {
     text: textInput.value(),
     x: xCoord,
     y: yCoord,
-    size: slider.value(),
+    size: sizeSlider.value(),
     color: colorPicker.color().levels
   };
 
   socket.emit ( 'text', data );
-
 }
 
-function clearWindow() {
-
-  background ( 254, 254, 254 );
-
-  socket.emit ( 'clear' );
-}
-
-function flipDrawing() {
-
-  if ( drawing ) document.getElementById('drawBtn').innerHTML = "Draw";
-  else document.getElementById('drawBtn').innerHTML = "Stamp";
-
-  drawing = !drawing;
-  
-}
-
-/*function keyPressed () {
-  console.log ( 'pressed' );
-  if ( keyCode == DELETE ) {
-
-    console.log ('delete pressed');
-
-    background ( 200, 200, 200 );
-
-    socket.emit ( 'clear' );
-  }
-}*/
-
-function newEmoji ( data ) {
-  image ( dictionary[data.val], data.x, data.y, data.size, data.size );
-}
-
-function newDrawing ( data ) {
-
-    fill ( data.color );
-    noStroke();
-    ellipse ( data.x, data.y, data.size, data.size );
-}
-
+// will activate whenever mouse is clicked
 function mouseClicked() {
 
-  if ( drawing ) return;
-  if ( slider.value() == 0 ) return;
+  if ( drawing ) return;                    // if not in drawing "mode", don't do anything
+  if ( sizeSlider.value() == 0 ) return;    // if size is 0, don't do anything
 
-  image ( dictionary[emojiSelect.value()], mouseX, mouseY, slider.value(), slider.value() );
+  imageMode ( CENTER );
+  image ( dictionary[emojiSelect.value()], mouseX, mouseY, sizeSlider.value(), sizeSlider.value() );
 
   var data = {
     x: mouseX,
     y: mouseY,
-    size: slider.value(),
+    size: sizeSlider.value(),
     val: emojiSelect.value()
   };
 
   socket.emit ( 'emoji', data );
 }
 
-// will activate whenever you click and dragg
+// will activate whenever mouse is clicked and dragged
 function mouseDragged() {
 
-  if ( !drawing ) return;
-  if ( slider.value() == 0 ) return;
+  if ( !drawing ) return;                   // if not in drawing "mode", don't do anything
+  if ( sizeSlider.value() == 0 ) return;    // if size is 0, don't do anything
 
   fill ( colorPicker.color().levels );
   noStroke();
-  ellipse ( mouseX, mouseY, slider.value(), slider.value() );
+  ellipse ( mouseX, mouseY, sizeSlider.value(), sizeSlider.value() );
 
-  // data is what socket will send to other clinets
-  // object literal notation
   var data = {
     x: mouseX,
     y: mouseY,
-    size: slider.value(),
+    size: sizeSlider.value(),
     color: colorPicker.color().levels
   };
 
-  // mouse is a channel name
-  socket.emit('mouse', data);
-
+  socket.emit ( 'mouse', data );
 }
