@@ -11,6 +11,8 @@ var app = express();
 var port = process.env.PORT || 3000;
 var server = app.listen ( port );
 
+//var server = app.listen ( 3000 );
+
 // use files in public folder
 app.use ( express.static ( 'public' ) );
 
@@ -27,6 +29,11 @@ function newConnection ( socket ) {
     socket.on ( 'mouse', mouseMsg );
     socket.on ( 'emoji', emojiMsg);
     socket.on ( 'clear', clearMsg );
+    socket.on ( 'text', textMsg );
+
+    function textMsg ( data ) {
+        socket.broadcast.emit ( 'text', data );
+    }
 
     function mouseMsg ( data ) {
         socket.broadcast.emit ( 'mouse', data );
