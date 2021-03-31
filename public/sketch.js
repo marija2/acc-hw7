@@ -19,28 +19,28 @@ var candy;
 var dictionary;
 
 function preload() {                                // get images for stamps
-  flower = loadImage('images/flower.png');
-  sun = loadImage('images/sun.png');
-  heart = loadImage('images/heart.png');
-  candy = loadImage('images/candy.png');
-  butterfly = loadImage('images/butterfly.png');
-  unicorn = loadImage('images/unicorn.png');
+  flower = loadImage ( 'images/flower.png' );
+  sun = loadImage ( 'images/sun.png' );
+  heart = loadImage ( 'images/heart.png' );
+  candy = loadImage ( 'images/candy.png' );
+  butterfly = loadImage ( 'images/butterfly.png' );
+  unicorn = loadImage ( 'images/unicorn.png' );
 }
 
 function setup() {
 
   var canvas = createCanvas ( windowWidth - 200, windowHeight );
-  canvas.position (0,0);
+  canvas.position ( 0, 0 );
 
   background ( 254, 254, 254 );
 
-  socket = io.connect('https://acc-hw7.herokuapp.com/');
+  socket = io.connect ( 'https://acc-hw7.herokuapp.com/' );
 
   // handle broadcast calls
   socket.on ( 'mouse', function ( data ) {
 
     fill ( data.color );
-    noStroke();
+    noStroke ();
     ellipse ( data.x, data.y, data.size, data.size );
 
   } );
@@ -76,8 +76,8 @@ function setup() {
 
   drawBtn.mousePressed ( function () {
 
-    if ( drawing ) document.getElementById('drawBtn').innerHTML = "Draw";
-    else document.getElementById('drawBtn').innerHTML = "Stamp";
+    if ( drawing ) document.getElementById ( 'drawBtn' ).innerHTML = "Draw";
+    else document.getElementById ( 'drawBtn' ).innerHTML = "Stamp";
   
     drawing = !drawing;
     
@@ -91,7 +91,7 @@ function setup() {
   sizeSlider.addClass ( 'sliderClass' );
   sizeSlider.position ( left, 120 );
 
-  var line1 = createElement('hr');
+  var line1 = createElement ( 'hr' );
   line1.addClass ( 'lineClass' );
   line1.position ( left, 140 );
 
@@ -102,7 +102,7 @@ function setup() {
   colorPicker = createColorPicker ( "blue" );
   colorPicker.position ( left, 190 );
 
-  var line2 = createElement('hr');
+  var line2 = createElement ( 'hr' );
   line2.addClass ( 'lineClass' );
   line2.position ( left, 220 );
 
@@ -118,7 +118,7 @@ function setup() {
   textBtn.position ( left, 300 );
   textBtn.mousePressed ( addText );
 
-  var line3 = createElement('hr');
+  var line3 = createElement ( 'hr' );
   line3.addClass ( 'lineClass' );
   line3.position ( left, 330 );
 
@@ -126,7 +126,7 @@ function setup() {
   emojiLabel.addClass ( 'labelClass' );
   emojiLabel.position ( left, 340 );
 
-  emojiSelect = createSelect();
+  emojiSelect = createSelect ();
   emojiSelect.position ( left, 380 );
   emojiSelect.option ( 'flower', 0 );
   emojiSelect.option ( 'heart', 1 );
@@ -135,7 +135,7 @@ function setup() {
   emojiSelect.option ( 'unicorn', 4 );
   emojiSelect.option ( 'candy', 5 );
 
-  var line4 = createElement('hr');
+  var line4 = createElement ( 'hr' );
   line4.addClass ( 'lineClass' );
   line4.position ( left, 400 );
 
@@ -193,7 +193,7 @@ function mouseClicked() {
   if ( sizeSlider.value() == 0 ) return;    // if size is 0, don't do anything
 
   imageMode ( CENTER );
-  image ( dictionary[emojiSelect.value()], mouseX, mouseY, sizeSlider.value(), sizeSlider.value() );
+  image ( dictionary [ emojiSelect.value() ], mouseX, mouseY, sizeSlider.value(), sizeSlider.value() );
 
   var data = {
     x: mouseX,
